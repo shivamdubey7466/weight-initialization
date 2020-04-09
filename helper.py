@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
+tf.compat.v1.disable_eager_execution()
 
 def hist_dist(title, distribution_tensor, hist_range=(-4, 4)):
     """
     Display histogram of a TF distribution
     """
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess:
         values = sess.run(distribution_tensor)
 
     plt.title(title)
@@ -22,10 +23,10 @@ def _get_loss_acc(dataset, weights):
     batch_size = 128
     epochs = 2
     learning_rate = 0.001
-
-    features = tf.placeholder(tf.float32)
-    labels = tf.placeholder(tf.float32)
-    learn_rate = tf.placeholder(tf.float32)
+    
+    features = tf.compat.v1.placeholder(tf.float32)
+    labels = tf.compat.v1.placeholder(tf.float32)
+    learn_rate = tf.compat.v1.placeholder(tf.float32)
 
     biases = [
         tf.Variable(tf.zeros([256])),
@@ -42,7 +43,7 @@ def _get_loss_acc(dataset, weights):
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
 
     # Optimizer
-    optimizer = tf.train.AdamOptimizer(learn_rate).minimize(loss)
+    optimizer = tf.compat.v1.train.AdamOptimizer(learn_rate).minimize(loss)
 
     # Accuracy
     correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
@@ -51,8 +52,8 @@ def _get_loss_acc(dataset, weights):
     # Measurements use for graphing loss
     loss_batch = []
 
-    with tf.Session() as session:
-        session.run(tf.global_variables_initializer())
+    with tf.compat.v1.Session() as session:
+        session.run(tf.compat.v1.global_variables_initializer())
         batch_count = int((dataset.train.num_examples / batch_size))
 
         # The training cycle
@@ -95,6 +96,7 @@ def compare_init_weights(
     assert len(weight_init_list) <= len(colors), 'Too many inital weights to plot'
 
     for i, (weights, label) in enumerate(weight_init_list):
+        #print(label)
         loss, val_acc = _get_loss_acc(dataset, weights)
 
         plt.plot(loss[:plot_n_batches], colors[i], label=label)
