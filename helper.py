@@ -12,7 +12,7 @@ def hist_dist(title, distribution_tensor, hist_range=(-4, 4)):
         values = sess.run(distribution_tensor)
 
     plt.title(title)
-    plt.hist(values, np.linspace(*hist_range, num=len(values)/2))
+    plt.hist(values, np.linspace(*hist_range, num=len(values)//2))
     plt.show()
 
 
@@ -55,7 +55,7 @@ def _get_loss_acc(dataset, weights):
     with tf.compat.v1.Session() as session:
         session.run(tf.compat.v1.global_variables_initializer())
         batch_count = int((dataset.train.num_examples / batch_size))
-
+        
         # The training cycle
         for epoch_i in range(epochs):
             for batch_i in range(batch_count):
